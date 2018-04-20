@@ -31,7 +31,7 @@ $(function() {
         it('all the feeds have a url and an URL is defined', function() {
             for(let feed of allFeeds) {
                 expect(feed.url).toBeDefined();
-                expect(feed.url.length).not.toBeLessThan(6);
+                expect(feed.url.length).toBeGreaterThan(5);
                 expect(feed.url).toMatch(/^http(s?)\:\/\//);
             }
             
@@ -67,7 +67,7 @@ $(function() {
     describe('The menu', function() {
         let menuHidden = $('.menu-hidden');
         let body = $('body');
-        menuIcon = $('.menu-icon-link');
+        let menuIcon = $('.menu-icon-link');
         
         /* Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
@@ -84,7 +84,7 @@ $(function() {
           */
          it('when menu button is clicked the visibilty changes', function() {
             menuIcon.click();
-            expect(body.className).not.toContain('menu-hidden');
+            expect(body).not.toHaveClass('menu-hidden');
 
             menuIcon.click();
             expect(body).toHaveClass('menu-hidden');
@@ -104,13 +104,13 @@ $(function() {
         });
 
         it('loadfeed should have at least a single entry element within the feed container', function() {
-            expect($('.feed .entry').length).not.toBeLessThan(1);
+            expect($('.feed .entry').length).toBeGreaterThan(0);
         });
     });
     /* Write a new test suite named "New Feed Selection" */
     describe('New Feed Selection', function() { 
         let initialFeed;
-    
+        let newFeed;
         /* Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
@@ -118,13 +118,16 @@ $(function() {
         beforeEach(function(done) {
             loadFeed(0, function() {
                 initialFeed = $('.feed').html();
-                loadFeed(1, done);
+
+                loadFeed(1, function() {
+                    newFeed = $('.feed').html();
+                    done();
+                });
             });
-            done();
         });
 
         it('when a new feed is loaded the content changes', function() {
-            expect($('.feed').html()).not.toBe(initialFeed);
+            expect(newFeed).not.toBe(initialFeed);
         });
     });
 }());
